@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { branch, compose, pure, renderNothing, withStateHandlers } from 'recompose'
+import { branch, compose, lifecycle, pure, renderNothing, StateHandlerMap, withStateHandlers } from 'recompose'
 import { bindActionCreators } from 'redux'
 
 import DictationCard, { IDictationCard } from '../../../components/organisms/DictationCard'
@@ -50,35 +50,23 @@ const connector = connect<IStateProps, IDispatchProps, IOwnProps, IConnectProps,
   }
 )
 
-// const addPlayer = withProps((props: IConnectProps) => {
-//   const { audio, dictation, play, pause } = props
-//   console.log({ audio, dictation })
-//   if (!!audio) {
-//     // const audioObj = new Audio(audio.src + '#t=' + dictation.start + ',' + dictation.end)
-//     const audioObj = new Audio(audio.src)
-//     return {
-//       play: () => {
-//         play(audio.id)
-//         audioObj.play()
-//       },
-//       pause: () => {
-//         pause(audio.id)
-//         audioObj.pause()
-//       }
-//     }
-//   } else {
-//     return {
-//       play: null,
-//       pause: null
-//     }
-//   }
-// })
+interface IAddPlayerState {
+  audioObj: HTMLAudioElement
+  duration: number | null
+}
+interface IAddPlayerUpdater extends StateHandlerMap<IAddPlayerState> {
+  play: () => {}
+  pause: () => {}
+  setDuration: (duration: number) => { duration: number }
+}
+type IAddPlayer = IAddPlayerState & IAddPlayerUpdater & IConnectProps
 
-const addPlayer = withStateHandlers(
-  (props: IConnectProps) => {
+const addPlayer = withStateHandlers<IAddPlayerState, IAddPlayerUpdater, IConnectProps>(
+  props => {
     const audioObj = new Audio()
     audioObj.src = !!props.audio ? props.audio.src : ''
-    return { audioObj }
+    audioObj.load()
+    return { audioObj, duration: null }
   },
   {
     play: (state, props) => () => {
@@ -96,15 +84,28 @@ const addPlayer = withStateHandlers(
         state.audioObj.pause()
       }
       return {}
-    }
+    },
+    setDuration: () => (duration: number) => ({ duration })
   }
 )
+
+const withLifeCycle = lifecycle<IAddPlayer, {}>({
+  componentDidMount() {
+    const { audioObj, setDuration } = this.props
+    audioObj.onloadedmetadata = () => {
+      const n = 3
+      setDuration(Math.floor(audioObj.duration * Math.pow(10, n)) / Math.pow(10, n))
+    }
+  }
+})
 
 const enhancer = compose<IDictationCard, IOwnProps>(
   connector,
   branch<IConnectProps>(({ audio }) => !audio, renderNothing),
   addPlayer,
-  pure
+  withLifeCycle,
+  pure,
+  branch<IAddPlayer>(({ audioObj }) => !audioObj.duration, renderNothing)
 )
 
 export default enhancer(DictationCard)

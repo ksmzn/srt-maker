@@ -1,24 +1,25 @@
-import { Avatar, Button, Card, Col, Input, Row } from 'antd'
+import { Button, Card, Col, Input, Row } from 'antd'
+import { Range } from 'rc-slider'
 import * as React from 'react'
-import { IAudio, IDictation } from '../../../modules/main/types'
+import { IDictation } from '../../../modules/main/types'
 
 export interface IDictationCard {
   index: number
-  audio: IAudio
   dictation: IDictation
+  // audioObj: HTMLAudioElement
+  duration: number
   play: () => void
   pause: () => void
   onChangeText: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
 }
 
 const DictationCard = (props: IDictationCard) => {
-  const { index, audio, dictation, onChangeText, play, pause } = props
-  console.log({ audio })
+  const { index, dictation, duration, onChangeText, play, pause } = props
   return (
-    <Card>
+    <Card title={index}>
       <Row gutter={16}>
         <Col span={12}>
-          <Avatar>{index}</Avatar>
+          <Range max={duration} step={0.001} count={2} defaultValue={[0, 0, duration]} pushable={true} />
           {dictation.playing ? (
             <Button type="primary" shape="circle" icon="pause" onClick={pause} size="large" />
           ) : (

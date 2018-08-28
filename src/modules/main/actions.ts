@@ -34,8 +34,7 @@ const thunkActions = {
         id: uuid(),
         src: audio.preview,
         name: audio.name,
-        contentType: audio.type,
-        playing: false
+        contentType: audio.type
       }))
       const normalized = normalize(inputAudiosWithId, [AudiosSchema])
       const audios: Audios = { allIds: normalized.result, byId: normalized.entities.audios }
