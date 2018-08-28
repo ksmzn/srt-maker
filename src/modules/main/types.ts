@@ -4,10 +4,14 @@ import { INormalize } from '../index'
 
 // ActionTypes
 export enum ActionTypes {
+  PLAY = '[MAIN]PLAY',
+  PAUSE = '[MAIN]PAUSE',
   SET_AUDIO_ID = '[MAIN]SET_AUDIO_ID',
   SET_AUDIOS = '[MAIN]SET_AUDIOS',
   ADD_DICTATION_AREA = '[MAIN]ADD_DICTATION_AREA',
   CHANGE_DICTATION_TEXT = '[MAIN]CHANGE_DICTATION_TEXT',
+  SET_START_OFFSET = '[MAIN]_START_OFFSET',
+  SET_END_OFFSET = '[MAIN]_END_OFFSET',
   REORDER_AUDIO_IDS = '[MAIN]REORDER_AUDIO_IDS'
 }
 
@@ -30,6 +34,7 @@ export interface IDictation {
   end: number
   current: number
   text: string
+  playing: boolean
 }
 export type Dictations = INormalize<IDictation>
 

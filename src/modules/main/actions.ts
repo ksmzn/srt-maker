@@ -7,9 +7,17 @@ import { ActionTypes, ActionUnion, Audios, AudiosSchema, createAction } from './
 
 // Actions
 export const actions = {
+  play: (audioId: string, dictationId: string) =>
+    createAction({ type: ActionTypes.PLAY, payload: { audioId, dictationId } }),
+  pause: (audioId: string, dictationId: string) =>
+    createAction({ type: ActionTypes.PAUSE, payload: { audioId, dictationId } }),
   setAudioId: (id: string) => createAction({ type: ActionTypes.SET_AUDIO_ID, payload: { id } }),
   setAudios: (audios: Audios) => createAction({ type: ActionTypes.SET_AUDIOS, payload: { audios } }),
   addDictationArea: () => createAction({ type: ActionTypes.ADD_DICTATION_AREA }),
+  setStartOffset: (audioId: string, dictationId: string, start: number) =>
+    createAction({ type: ActionTypes.SET_START_OFFSET, payload: { audioId, dictationId, start } }),
+  setEndOffset: (audioId: string, dictationId: string, end: number) =>
+    createAction({ type: ActionTypes.SET_END_OFFSET, payload: { audioId, dictationId, end } }),
   changeDictationText: (audioId: string, dictationId: string, text: string) =>
     createAction({ type: ActionTypes.CHANGE_DICTATION_TEXT, payload: { audioId, dictationId, text } }),
   reorderAudioIds: (newIndex: number, oldIndex: number) =>
@@ -26,7 +34,8 @@ const thunkActions = {
         id: uuid(),
         src: audio.preview,
         name: audio.name,
-        contentType: audio.type
+        contentType: audio.type,
+        playing: false
       }))
       const normalized = normalize(inputAudiosWithId, [AudiosSchema])
       const audios: Audios = { allIds: normalized.result, byId: normalized.entities.audios }

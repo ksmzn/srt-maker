@@ -18,6 +18,12 @@ export const initialState: IState = {
 
 export default produce((state: IState, action: Action) => {
   switch (action.type) {
+    case ActionTypes.PLAY:
+      state.dictations[action.payload.audioId].byId[action.payload.dictationId].playing = true
+      return
+    case ActionTypes.PAUSE:
+      state.dictations[action.payload.audioId].byId[action.payload.dictationId].playing = false
+      return
     case ActionTypes.SET_AUDIO_ID:
       state.audioId = action.payload.id
       return
@@ -27,6 +33,16 @@ export default produce((state: IState, action: Action) => {
     case ActionTypes.ADD_DICTATION_AREA:
       addDictationArea(state)
       return
+    case ActionTypes.SET_START_OFFSET: {
+      const { audioId, dictationId, start } = action.payload
+      state.dictations[audioId].byId[dictationId].start = start
+      return
+    }
+    case ActionTypes.SET_END_OFFSET: {
+      const { audioId, dictationId, end } = action.payload
+      state.dictations[audioId].byId[dictationId].end = end
+      return
+    }
     case ActionTypes.CHANGE_DICTATION_TEXT: {
       const { audioId, dictationId, text } = action.payload
       changeDictationText(state, audioId, dictationId, text)
@@ -48,7 +64,8 @@ const addDictationArea = (state: IState) => {
     start: 0,
     end: 0,
     current: 0,
-    text: ''
+    text: '',
+    playing: false
   }
   if (!state.dictations[audioId]) {
     state.dictations[audioId] = initialNormalizedState
