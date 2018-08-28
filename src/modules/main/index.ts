@@ -1,4 +1,4 @@
-export { homeActions } from './actions'
+export { mainActions } from './actions'
 export { ActionTypes } from './types'
 
 import Reducer from './reducer'

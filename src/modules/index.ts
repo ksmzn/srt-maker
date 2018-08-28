@@ -1,14 +1,22 @@
 import { combineReducers } from 'redux'
-import home, { homeActions } from './home'
+import main, { mainActions } from './main'
+import selector from './selector'
 
 // Action
 export const actions = {
-  home: homeActions
+  main: mainActions
 }
 
 // Reducer
 const rootReducer = combineReducers({
-  home
+  main
 })
 export type RootState = ReturnType<typeof rootReducer>
 export default rootReducer
+
+export interface INormalize<T> {
+  byId: { [k: string]: T }
+  allIds: string[]
+}
+
+export { selector }

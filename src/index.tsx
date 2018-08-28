@@ -1,7 +1,7 @@
 import 'antd/dist/antd.css'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import { AppContainer, hot } from 'react-hot-loader'
+import { AppContainer } from 'react-hot-loader'
 import Redbox from 'redbox-react'
 
 import App from './App'
